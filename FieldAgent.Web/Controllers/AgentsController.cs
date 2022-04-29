@@ -19,7 +19,7 @@ namespace FieldAgent.Web.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
+        [Route("{id}", Name = "GetAgent")]
         public IActionResult GetAgent(int id)
         {
             var result = _AgentRepository.Get(id);
@@ -38,6 +38,36 @@ namespace FieldAgent.Web.Controllers
             else
             {
                 return BadRequest(result.Message);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddAgent(AgentModel agentModel)
+        {
+            if (ModelState.IsValid)
+            {
+                Agent agent = new Agent
+                {
+                    FirstName = agentModel.FirstName,
+                    LastName = agentModel.LastName,
+                    DateOfBirth = agentModel.DateOfBirth,
+                    Height = agentModel.Height
+                };
+
+                var result = _AgentRepository.Insert(agent);
+
+                if (result.Success)
+                {
+                    return CreatedAtRoute(nameof(GetAgent), new { id = result.Data.AgentId }, result.Data);
+                }
+                else
+                {
+                    return BadRequest(result.Message);
+                }
+            }
+            else
+            {
+                return BadRequest(ModelState);
             }
         }
 
