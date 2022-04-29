@@ -71,5 +71,25 @@ namespace FieldAgent.Web.Controllers
             }
         }
 
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult RemoveAgent(int id)
+        {
+            if (!_AgentRepository.Get(id).Success)
+            {
+                return NotFound($"Agent {id} could not be found");
+            }
+
+            var result = _AgentRepository.Delete(id);
+
+            if (result.Success)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
+        }
     }
 }
