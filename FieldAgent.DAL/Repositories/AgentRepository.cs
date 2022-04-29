@@ -13,7 +13,7 @@ namespace FieldAgent.DAL.Repositories
         {
             DbFac = dbfac;
         }
-        
+
         public Response<Agent> Get(int agentId)
         {
             Response<Agent> result = new Response<Agent>();
