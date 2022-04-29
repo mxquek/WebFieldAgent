@@ -91,5 +91,46 @@ namespace FieldAgent.Web.Controllers
                 return BadRequest(result.Message);
             }
         }
+
+        [HttpPut]
+        public IActionResult EditAgent(AgentModel agentModel)
+        {
+            if(ModelState.IsValid && agentModel.AgentId > 0)
+            {
+                Agent agent = new Agent
+                {
+                    AgentId = agentModel.AgentId,
+                    FirstName = agentModel.FirstName,
+                    LastName = agentModel.LastName,
+                    DateOfBirth = agentModel.DateOfBirth,
+                    Height = agentModel.Height
+                };
+
+                var findResult = _AgentRepository.Get(agent.AgentId);
+                if (!findResult.Success)
+                {
+                    return NotFound($"Agent {agent.AgentId} not found");
+                }
+
+                var result = _AgentRepository.Update(agent);
+
+                if (result.Success)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest(result.Message);
+                }
+            }
+            else
+            {
+                if(agentModel.AgentId <= 0)
+                {
+                    ModelState.AddModelError("agentId", "Invalid Agent ID");
+                }
+                return BadRequest(ModelState);
+            }
+        }
     }
 }
