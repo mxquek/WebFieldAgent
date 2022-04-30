@@ -41,6 +41,48 @@ namespace FieldAgent.Web.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("{id}/missions")]
+        public IActionResult GetMissions(int id)
+        {
+            if (!_AgentRepository.Get(id).Success)
+            {
+                return NotFound($"Agent {id} not found");
+            }
+
+            var result = _AgentRepository.GetMissions(id);
+
+            if (result.Success)
+            {
+                if (result.Data.Count == 0)
+                {
+                    return NotFound($"No missions found for Agent {id}");
+                }
+
+                return Ok
+                (
+                    result.Data.Select
+                    (mission => new MissionModel()
+                        {
+                            MissionId = mission.MissionId,
+                            CodeName = mission.CodeName,
+                            StartDate = mission.StartDate,
+                            ProjectedEndDate = mission.ProjectedEndDate,
+                            ActualEndDate = mission.ActualEndDate,
+                            OperationalCost = mission.OperationalCost,
+                            Notes = mission.Notes,
+
+                            AgencyId = mission.AgencyId
+                        }
+                    )
+                );
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
+        }
+
         [HttpPost]
         public IActionResult AddAgent(AgentModel agentModel)
         {
