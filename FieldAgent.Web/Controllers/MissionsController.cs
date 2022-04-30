@@ -76,6 +76,27 @@ namespace FieldAgent.Web.Controllers
                 return BadRequest(ModelState);
             }
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult RemoveMission(int id)
+        {
+            if (!_MissionRepository.Get(id).Success)
+            {
+                return NotFound($"Mission {id} not found");
+            }
+
+            var result = _MissionRepository.Delete(id);
+
+            if (result.Success)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
+        }
     }
 
 
