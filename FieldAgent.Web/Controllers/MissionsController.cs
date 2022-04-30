@@ -57,6 +57,7 @@ namespace FieldAgent.Web.Controllers
                     ActualEndDate = missionModel.ActualEndDate,
                     OperationalCost = missionModel.OperationalCost,
                     Notes = missionModel.Notes,
+
                     AgencyId = missionModel.AgencyId
                 };
 
@@ -95,6 +96,47 @@ namespace FieldAgent.Web.Controllers
             else
             {
                 return BadRequest(result.Message);
+            }
+        }
+
+        [HttpPut]
+        public IActionResult EditMission(MissionModel missionModel)
+        {
+            if (ModelState.IsValid)
+            {
+                Mission mission = new Mission()
+                {
+                    MissionId = missionModel.MissionId,
+                    CodeName = missionModel.CodeName,
+                    StartDate = missionModel.StartDate,
+                    ProjectedEndDate = missionModel.ProjectedEndDate,
+                    ActualEndDate = missionModel.ActualEndDate,
+                    OperationalCost = missionModel.OperationalCost,
+                    Notes = missionModel.Notes,
+
+                    AgencyId = missionModel.AgencyId
+                };
+
+                if (!_MissionRepository.Get(mission.MissionId).Success)
+                {
+                    return NotFound($"Mission {mission.MissionId} not found");
+                }
+
+                var result = _MissionRepository.Update(mission);
+
+                if (result.Success)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest(result.Message);
+                }
+                
+            }
+            else
+            {
+                return BadRequest(ModelState);
             }
         }
     }
