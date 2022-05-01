@@ -102,7 +102,7 @@ namespace FieldAgent.Web.Controllers
         [HttpPut]
         public IActionResult EditMission(MissionModel missionModel)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && missionModel.MissionId > 0)
             {
                 Mission mission = new Mission()
                 {
@@ -136,6 +136,10 @@ namespace FieldAgent.Web.Controllers
             }
             else
             {
+                if (missionModel.MissionId <= 0)
+                {
+                    ModelState.AddModelError("missionId", "Invalid Mission ID");
+                }
                 return BadRequest(ModelState);
             }
         }

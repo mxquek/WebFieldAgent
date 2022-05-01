@@ -93,6 +93,46 @@ namespace FieldAgent.Web.Controllers
 
         }
 
+        [HttpPut]
+        public IActionResult EditAlias(AliasModel aliasModel)
+        {
+            if(ModelState.IsValid && aliasModel.AliasId > 0)
+            {
+                Alias alias = new Alias()
+                {
+                    AliasId = aliasModel.AliasId,
+                    AliasName = aliasModel.AliasName,
+                    InterpolId = aliasModel.InterpolId,
+                    Persona = aliasModel.Persona,
+
+                    AgentId = aliasModel.AgentId
+                };
+
+                if (!_AliasRepository.Get(alias.AliasId).Success)
+                {
+                    return NotFound($"Alias {alias.AliasId} not found");
+                }
+
+                var result = _AliasRepository.Update(alias);
+
+                if (result.Success)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest(result.Message);
+                }
+            }
+            else
+            {
+                if(aliasModel.AliasId <= 0)
+                {
+                    ModelState.AddModelError("aliasId", "Invalid Alias ID");
+                }
+                return BadRequest(ModelState);
+            }
+        }
 
     }
 }
