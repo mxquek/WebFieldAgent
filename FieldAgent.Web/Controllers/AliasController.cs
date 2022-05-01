@@ -40,6 +40,39 @@ namespace FieldAgent.Web.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("agent/{agentId}")]
+        public IActionResult GetByAgent(int agentId)
+        {
+            var result = _AliasRepository.GetByAgent(agentId);
+            if (result.Success)
+            {
+                if (result.Data.Count == 0)
+                {
+                    return NotFound($"No aliases found for Agent {agentId}");
+                }
+
+                return Ok
+                (
+                    result.Data.Select
+                    (alias => new AliasModel()
+                    {
+                        AliasId = alias.AliasId,
+                        AliasName = alias.AliasName,
+                        InterpolId = alias.InterpolId,
+                        Persona = alias.Persona,
+
+                        AgentId = alias.AgentId
+                    })
+                );
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
+        }
+
+
         [HttpPost]
         public IActionResult AddAlias(AliasModel aliasModel)
         {
@@ -134,5 +167,6 @@ namespace FieldAgent.Web.Controllers
             }
         }
 
+        
     }
 }
