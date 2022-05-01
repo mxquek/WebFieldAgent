@@ -20,6 +20,7 @@ namespace FieldAgent.Web
 
             services.AddTransient<IAgentRepository>(x => new AgentRepository(dbFactory));
             services.AddTransient<IMissionRepository>(x => new MissionRepository(dbFactory));
+            services.AddTransient<IAliasRepository>(x => new AliasRepository(dbFactory));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
