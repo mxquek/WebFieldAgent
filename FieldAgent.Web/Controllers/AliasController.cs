@@ -1,4 +1,5 @@
-﻿using FieldAgent.Core.Interfaces.DAL;
+﻿using FieldAgent.Core.Entities;
+using FieldAgent.Core.Interfaces.DAL;
 using FieldAgent.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +40,37 @@ namespace FieldAgent.Web.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult AddAlias(AliasModel aliasModel)
+        {
+            if (ModelState.IsValid)
+            {
+                Alias alias = new Alias()
+                {
+                    AliasName = aliasModel.AliasName,
+                    InterpolId = aliasModel.InterpolId,
+                    Persona = aliasModel.Persona,
+
+                    AgentId = aliasModel.AgentId
+                };
+
+                var result = _AliasRepository.Insert(alias);
+
+                if (result.Success)
+                {
+                    return CreatedAtRoute(nameof(GetAlias), new {id = result.Data.AliasId}, result.Data);
+                }
+                else
+                {
+                    return BadRequest(result.Message);
+                }
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
         [HttpDelete]
         [Route("{id}")]
         public IActionResult RemoveAlias(int id)
@@ -60,5 +92,7 @@ namespace FieldAgent.Web.Controllers
             }
 
         }
+
+
     }
 }
