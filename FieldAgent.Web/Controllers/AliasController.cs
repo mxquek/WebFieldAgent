@@ -38,5 +38,27 @@ namespace FieldAgent.Web.Controllers
                 return BadRequest(result.Message);
             }
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult RemoveAlias(int id)
+        {
+            if (!_AliasRepository.Get(id).Success)
+            {
+                return NotFound($"Alias {id} not found");
+            }
+
+            var result = _AliasRepository.Delete(id);
+
+            if (result.Success)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest(result.Message);
+            }
+
+        }
     }
 }
