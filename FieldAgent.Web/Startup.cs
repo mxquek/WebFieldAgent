@@ -1,6 +1,10 @@
 ﻿using FieldAgent.Core.Interfaces.DAL;
 using FieldAgent.DAL;
 using FieldAgent.DAL.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace FieldAgent.Web
 {
@@ -15,7 +19,24 @@ namespace FieldAgent.Web
         DbFactory dbFactory = new DbFactory(cp.Config, FactoryMode.TEST);
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+              .AddJwtBearer(options =>
+              {
+                  options.TokenValidationParameters = new TokenValidationParameters
+                  {
+                      ValidateIssuer = true,
+                      ValidateAudience = true,
+                      ValidateLifetime = true,
+                      ValidateIssuerSigningKey = true,
+
+                      ValidIssuer = "http://localhost:2000",
+                      ValidAudience = "http://localhost:2000",
+                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("KeyForSignInSecret@1234"))
+                  };
+                  services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+              });
+
+
             services.AddControllers().AddXmlDataContractSerializerFormatters();
 
             services.AddTransient<IAgentRepository>(x => new AgentRepository(dbFactory));
@@ -32,6 +53,9 @@ namespace FieldAgent.Web
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

@@ -2,6 +2,7 @@
 using FieldAgent.Core.Interfaces.DAL;
 using FieldAgent.DAL;
 using FieldAgent.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -113,7 +114,7 @@ namespace FieldAgent.Web.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete, Authorize]
         [Route("{id}")]
         public IActionResult RemoveAgent(int id)
         {
@@ -134,7 +135,7 @@ namespace FieldAgent.Web.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut, Authorize]
         public IActionResult EditAgent(AgentModel agentModel)
         {
             if(ModelState.IsValid && agentModel.AgentId > 0)

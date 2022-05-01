@@ -1,6 +1,7 @@
 ﻿using FieldAgent.Core.Entities;
 using FieldAgent.Core.Interfaces.DAL;
 using FieldAgent.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -104,7 +105,7 @@ namespace FieldAgent.Web.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpDelete, Authorize]
         [Route("{id}")]
         public IActionResult RemoveAlias(int id)
         {
@@ -126,7 +127,7 @@ namespace FieldAgent.Web.Controllers
 
         }
 
-        [HttpPut]
+        [HttpPut, Authorize]
         public IActionResult EditAlias(AliasModel aliasModel)
         {
             if(ModelState.IsValid && aliasModel.AliasId > 0)
